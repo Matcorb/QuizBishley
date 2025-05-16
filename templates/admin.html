@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  </head>
+  <body>
+    <h1>Quiz Control</h1>
+    <input id="question" placeholder="Question" />
+    <input id="answer" placeholder="Correct Answer" />
+    <button onclick="sendQuestion()">Send Question</button>
+
+    <h2>Leaderboard</h2>
+    <pre id="leaderboard"></pre>
+
+    <script>
+      const socket = io();
+
+      function sendQuestion() {
+        const question = document.getElementById("question").value;
+        const answer = document.getElementById("answer").value;
+        socket.emit("next_question", { question, answer });
+      }
+
+      socket.on("leaderboard_update", (data) => {
+        const board = Object.entries(data)
+          .map(([name, obj]) => `${name}: ${obj.score}`)
+          .join("\n");
+        document.getElementById("leaderboard").innerText = board;
+      });
+    </script>
+  </body>
+</html>

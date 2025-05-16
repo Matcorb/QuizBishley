@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  </head>
+  <body>
+    <h2 id="question">Waiting for question...</h2>
+    <input type="text" id="answer" placeholder="Your answer" />
+    <button onclick="submitAnswer()">Submit</button>
+
+    <script>
+      const socket = io();
+      const name = "{{ player_name }}";
+
+      socket.emit("join", { name });
+
+      socket.on("new_question", (data) => {
+        document.getElementById("question").innerText = data.question;
+      });
+
+      function submitAnswer() {
+        const answer = document.getElementById("answer").value;
+        socket.emit("submit_answer", { name, answer });
+      }
+    </script>
+  </body>
+</html>
