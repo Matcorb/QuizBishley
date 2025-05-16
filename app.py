@@ -13,11 +13,11 @@ def home():
     return render_template("home.html")
 
 @app.route("/host")
-def admin():
+def host():
     return render_template("host.html")
 
 @app.route("/creation")
-def admin():
+def creation():
     return render_template("creation.html")
 
 @app.route("/player/<name>")
