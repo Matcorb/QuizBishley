@@ -4,13 +4,9 @@
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   </head>
   <body>
-    <h2 id="question">Waiting for question...</h2>
-
+    <h1>Quiz Creation</h1>
     <script>
       const socket = io();
-      const name = "{{ player_name }}";
-
-      socket.emit("join", { name });
     </script>
   </body>
 </html>

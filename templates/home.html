@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  </head>
+  <body>
+    <h1>QuizBishley</h1>
+    <h2>Join a live quiz</h2>
+    <button id="join" onclick="joinQuiz()">Join Quiz</button>
+    <h2>Host a quiz</h2>
+    <button id="start" onclick="startQuiz()">Start Quiz</button>
+    <h2>Create a new quiz</h2>
+    <button id="create" onclick="createQuiz()">Create Quiz</button>
+
+    <script>
+      const socket = io();
+
+      function joinQuiz() {
+        window.location.href = "/player/corb";
+      }
+
+      function startQuiz() {
+        window.location.href = "/host";
+      }
+
+      function createQuiz() {
+        window.location.href = "/creation";
+      }
+    </script>
+  </body>
+</html>
