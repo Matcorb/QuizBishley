@@ -8,7 +8,7 @@ players = {}
 current_question = {}
 scores = {}
 
-@app.rout("/")
+@app.route("/")
 def home():
     return render_template("home.html")
 
