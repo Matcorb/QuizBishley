@@ -8,9 +8,11 @@
 
     <script>
       const socket = io();
-      const name = "{{ player_name }}";
 
-      socket.emit("join", { name });
+      socket.emit("join", {
+        name: "{{ player_name }}",
+        room: "{{ room_id }}",
+      });
     </script>
   </body>
 </html>

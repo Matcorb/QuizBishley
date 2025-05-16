@@ -6,16 +6,21 @@
   <body>
     <h1>Quiz Control</h1>
     <h2>Leaderboard</h2>
-    <pre id="leaderboard"></pre>
+    <table id="leaderboard"></table>
 
     <script>
       const socket = io();
 
+      socket.emit("identify", { role: "host", file: "{{quiz_file}}" });
+
       socket.on("leaderboard_update", (data) => {
-        const board = Object.entries(data)
-          .map(([name, obj]) => `${name}: ${obj.score}`)
-          .join("\n");
-        document.getElementById("leaderboard").innerText = board;
+        const rows = Object.entries(data)
+          .map(
+            ([id, obj]) => `<tr><td>${obj.name}</td><td>${obj.score}</td></tr>`
+          )
+          .join("");
+        document.getElementById("leaderboard").innerHTML =
+          `<tr><th>Name</th><th>Score</th></tr>` + rows;
       });
     </script>
   </body>

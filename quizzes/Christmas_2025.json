@@ -1,0 +1,30 @@
+{
+  "title": "Christmas 2025",
+  "categories": [
+    {
+      "name": "Nerd Alert",
+      "questions": [
+        {
+          "question": "How many?",
+          "answer": "2",
+          "points": 100
+        },
+        {
+          "question": "Who?",
+          "answer": "Xav",
+          "points": 200
+        }
+      ]
+    },
+    {
+      "name": "Call me maybe",
+      "questions": [
+        {
+          "question": "Google",
+          "answer": "Pratt",
+          "points": 400
+        }
+      ]
+    }
+  ]
+}

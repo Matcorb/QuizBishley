@@ -6,25 +6,90 @@
   <body>
     <h1>QuizBishley</h1>
     <h2>Join a live quiz</h2>
-    <button id="join" onclick="joinQuiz()">Join Quiz</button>
+    <div id="activeQuizzes">Loading games...</div>
     <h2>Host a quiz</h2>
-    <button id="start" onclick="startQuiz()">Start Quiz</button>
+    <div id="quizList">Loading quizzes...</div>
     <h2>Create a new quiz</h2>
     <button id="create" onclick="createQuiz()">Create Quiz</button>
 
     <script>
       const socket = io();
 
-      function joinQuiz() {
-        window.location.href = "/player/corb";
-      }
-
-      function startQuiz() {
-        window.location.href = "/host";
-      }
+      fetch_active_games();
 
       function createQuiz() {
         window.location.href = "/creation";
+      }
+
+      fetch_quiz_list();
+
+      function hostQuiz(file) {
+        window.location.href = `/host/${encodeURIComponent(file)}`;
+      }
+
+      function joinQuiz(room) {
+        const name = prompt("Enter your name:");
+        if (name && name.trim() !== "") {
+          window.location.href = `/player/${encodeURIComponent(
+            name.trim()
+          )}/${room}`;
+        } else {
+          alert("Please enter a valid name.");
+        }
+      }
+
+      socket.on("update_active_games", () => {
+        fetch_active_games();
+      });
+
+      socket.on("update_quiz_list", () => {
+        fetch_quiz_list();
+      });
+
+      function fetch_active_games() {
+        fetch("/active_quizzes")
+          .then((res) => res.json())
+          .then((games) => {
+            const container = document.getElementById("activeQuizzes");
+            if (games.length === 0) {
+              container.innerText = "No live games available.";
+              return;
+            }
+
+            container.innerHTML = games
+              .map(
+                (game) => `
+            <div style="margin-bottom: 10px;">
+              <strong>${game.title}</strong>
+              <button onclick="joinQuiz('${game.room}')">Join</button>
+            </div>
+          `
+              )
+              .join("");
+          });
+      }
+
+      function fetch_quiz_list() {
+        fetch("/quiz_list")
+          .then((res) => res.json())
+          .then((quizzes) => {
+            const container = document.getElementById("quizList");
+            if (quizzes.length === 0) {
+              container.innerText = "No quizzes available.";
+              return;
+            }
+
+            container.innerHTML = quizzes
+              .map(
+                (quiz) => `
+            <div style="margin-bottom: 10px;">
+              <strong>${quiz.title}</strong>
+              <button onclick="hostQuiz('${quiz.file}')">Host Quiz</button>
+            </div>
+          `
+              )
+              .join("");
+          });
       }
     </script>
   </body>

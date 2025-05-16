@@ -4,9 +4,93 @@
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   </head>
   <body>
-    <h1>Quiz Creation</h1>
+    <h1>Create a New Quiz</h1>
+    <label>Quiz Title:</label>
+    <input type="text" id="quizTitle" placeholder="Enter quiz title" />
+    <div id="categoriesContainer"></div>
+    <button onclick="addCategory()">➕ Add Category</button>
+    <button onclick="saveQuiz()">💾 Save Quiz</button>
     <script>
       const socket = io();
+
+      let categoryCount = 0;
+
+      function addCategory() {
+        const container = document.getElementById("categoriesContainer");
+
+        const categoryDiv = document.createElement("div");
+        categoryDiv.className = "category";
+        categoryDiv.setAttribute("data-category-id", categoryCount);
+
+        categoryDiv.innerHTML = `
+          <h3>Category</h3>
+          <input type="text" placeholder="Category name" class="category-name">
+          <div class="questionsContainer"></div>
+          <button onclick="addQuestion(${categoryCount})">➕ Add Question</button>
+        `;
+
+        container.appendChild(categoryDiv);
+        categoryCount++;
+      }
+
+      function addQuestion(categoryId) {
+        const categoryDiv = document.querySelector(
+          `[data-category-id='${categoryId}']`
+        );
+        const questionsContainer = categoryDiv.querySelector(
+          ".questionsContainer"
+        );
+
+        const questionDiv = document.createElement("div");
+        questionDiv.className = "question";
+        questionDiv.innerHTML = `
+          <input type="text" placeholder="Question" class="question-text">
+          <input type="text" placeholder="Answer" class="question-answer">
+          <input type="number" placeholder="Points" class="question-points">
+        `;
+
+        questionsContainer.appendChild(questionDiv);
+      }
+
+      function saveQuiz() {
+        const title = document.getElementById("quizTitle").value.trim();
+        if (!title) return alert("Please enter a quiz title.");
+
+        const categories = [];
+        document.querySelectorAll(".category").forEach((catDiv) => {
+          const name = catDiv.querySelector(".category-name").value.trim();
+          if (!name) return;
+
+          const questions = [];
+          catDiv.querySelectorAll(".question").forEach((qDiv) => {
+            const question = qDiv.querySelector(".question-text").value.trim();
+            const answer = qDiv.querySelector(".question-answer").value.trim();
+            const points = parseInt(
+              qDiv.querySelector(".question-points").value
+            );
+
+            if (question && answer && !isNaN(points)) {
+              questions.push({ question, answer, points });
+            }
+          });
+
+          if (questions.length > 0) {
+            categories.push({ name, questions });
+          }
+        });
+
+        const quizData = { title, categories };
+
+        fetch("/save_quiz", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(quizData),
+        })
+          .then((res) => res.json())
+          .then((data) => alert(data.message))
+          .catch((err) => alert("Error saving quiz."));
+        window.location.href = "/";
+      }
     </script>
   </body>
 </html>
